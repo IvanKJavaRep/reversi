@@ -45,7 +45,6 @@ public class Game {
         for (int i = 0; i < moves.size(); i++) {
             Move m = moves.get(i);
             double value = m.evaluate();
-            //double value = evaluate(m.fromI, m.fromJ, m.toI, m.toJ);
             if (value > maxValue) {
                 maxValue = value;
                 index = i;
