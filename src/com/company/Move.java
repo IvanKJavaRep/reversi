@@ -1,62 +1,52 @@
 package com.company;
 
-class Move {
-    int toI, toJ;
-    int fromI, fromJ;
-    double value;
+import java.util.Objects;
 
-    Move(int i, int j, int fI, int fJ) {
-        this.toI = i;
-        this.toJ = j;
-        fromI = fI;
-        fromJ = fJ;
+class Move {
+    private int toI;
+    private int toJ;
+
+    Move(int i, int j) {
+        this.setToI(i);
+        this.setToJ(j);
     }
 
     @Override
     public String toString() {
         return "Move{" +
-                "i=" + toI +
-                ", j=" + toJ +
-                ", fromI=" + fromI +
-                ", fromJ=" + fromJ +
+                "i=" + getToI() +
+                ", j=" + getToJ() +
+                ", fromI=" +
+                ", fromJ=" +
                 '}';
     }
 
-    double evaluate() {
-        double summ = 0;
-        if (fromI == toI && (toI == 0 || toI == 7)) {
-            if ((toI == 7 && toJ == 7) || (toI == 0 && toJ == 0) || (toI == 0 && toJ == 7) || (toI == 7 && toJ == 0)) {
-                summ = 2 * (Math.abs(fromJ - toJ) - 1) + 0.8;
-            } else {
-                summ = 2 * (Math.abs(fromJ - toJ) - 1) + 0.4;
-            }
-        } else if (fromJ == toJ && (toJ == 0 || toJ == 7)) {
-            if ((toI == 7 && toJ == 7) || (toI == 0 && toJ == 0) || (toI == 0 && toJ == 7) || (toI == 7 && toJ == 0)) {
-                summ = 2 * (Math.abs(fromI - toI) - 1) + 0.8;
-            } else {
-                summ = 2 * (Math.abs(fromI - toI) - 1) + 0.4;
-            }
-        } else if (fromI == toI && (toI != 0 || toI != 7)) {
-            if (toI == 0 || toI == 7) {
-                summ = Math.abs(toJ - fromJ) - 1 + 0.4;
-            } else {
-                summ = Math.abs(toJ - fromJ) - 1;
-            }
-        } else if (fromJ == toJ && (toJ != 0 || toJ != 7)) {
-            if (toJ == 0 || toJ == 7) {
-                summ = Math.abs(toI - fromI) - 1 + 0.4;
-            } else {
-                summ = Math.abs(toI - fromI) - 1;
-            }
-        } else if (Math.abs(toI - fromI) == Math.abs(toJ - fromJ)) {
-            if ((toI == 0 && toJ == 0) || (toI == 7 && toJ == 7) || (toI == 0 && toJ == 7) || (toI == 7 && toJ == 0)) {
-                summ = Math.abs(toI - fromI) - 1 + 0.8;
-            } else if (toI == 0 || toI == 7 || toJ == 0 || toJ == 7) {
-                summ = Math.abs(toI - fromI) - 1 + 0.4;
-            } else {
-                summ = Math.abs(toI - fromI) - 1;
-            }
-        }
-        return summ;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return getToI() == move.getToI() && getToJ() == move.getToJ();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getToI(), getToJ());
+    }
+
+    public int getToI() {
+        return toI;
+    }
+
+    public void setToI(int toI) {
+        this.toI = toI;
+    }
+
+    public int getToJ() {
+        return toJ;
+    }
+
+    public void setToJ(int toJ) {
+        this.toJ = toJ;
     }
 }

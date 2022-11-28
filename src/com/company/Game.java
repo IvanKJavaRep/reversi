@@ -1,226 +1,135 @@
 package com.company;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Game {
-    private Field field;
+    private List<Integer> results = new ArrayList<>();
 
-    String showPossibleMoves(Field field, List<Move> moves, Map<Character, Move> map) {
-        map.clear();
-        char counter = 'a';
-        String separator = "+-+-+-+-+-+-+-+-+\n";
-        String s = separator;
-        for (int i = 0; i < field._field.length; i++) {
-            String row = "|";
-            for (int j = 0; j < field._field[i].length; j++) {
-                int flag = 0;
-                for (var element :
-                        moves) {
-                    if (element.toI == i && element.toJ == j) {
-                        row += "" + counter + "|";
-                        map.put(counter, element);
-                        counter++;
-                        flag++;
-                        break;
+    Map<Character, Move> makeMoves(Field field, Cell player) {
+        Map<Character, Move> map = new HashMap<>();
+        String letters = "ABCDEFGHIJKLMNPQRSTUVWYZ";
+        int i = 0;
+        for (var move :
+                possible_moves(field, player)) {
+            map.put(letters.charAt(i), move);
+            i++;
+        }
+        return map;
+    }
+
+    public Character chooseGameType() {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Character input = '1';
+        while (true) {
+            try {
+                input = br.readLine().charAt(0);
+                if (input == '1' || input == '2' || input == '3' || input == 'x') {
+                    return input;
+                } else {
+                    System.out.println("Введите правильный симовл");
+                }
+            } catch (Exception e) {
+                System.out.println("Введите еще раз");
+            }
+        }
+    }
+
+    public ComputerPlayer chooseComputerColor() {
+        System.out.println("Вы выбрали режим игры с искусственным интеллектом\n" +
+                "Если хотите, чтобы компьютер играл за черных, введите 1, иначе - 2\n");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Character input = '1';
+        while (true) {
+            try {
+                String in = br.readLine();
+                if (in != null) {
+                    input = in.charAt(0);
+                    if (input == '1') {
+                        return new ComputerPlayer(Cell.BLACK);
+                    } else if (input == '2') {
+                        return new ComputerPlayer(Cell.WHITE);
+                    } else {
+                        System.out.println("Введите правильный симовл");
                     }
+                } else {
+                    System.out.println("Введите правильный симовл");
                 }
-                if (flag == 0) {
-                    row += "" + field._field[i][j] + "|";
-                }
-            }
-            s += row + "\n" + separator;
-        }
-        return s;
-    }
-
-    Move evaluateMoves(List<Move> moves) {
-        double maxValue = -1;
-        int index = 0;
-        for (int i = 0; i < moves.size(); i++) {
-            Move m = moves.get(i);
-            double value = m.evaluate();
-            if (value > maxValue) {
-                maxValue = value;
-                index = i;
+            } catch (Exception e) {
+                System.out.println("Введите еще раз");
             }
         }
-        return moves.get(index);
     }
 
-    List<Move> possibleMoves(Field field, Cell player) {
-        Cell color;
-        Cell oposite;
-        if (player.equals(Cell.WHITE)) {
-            color = Cell.WHITE;
-            oposite = Cell.BLACK;
+
+    boolean in_field(int i, int j) {
+        return (0 <= i && i <= 7) && (0 <= j && j <= 7);
+    }
+
+
+    boolean can_move(int i, int j, Cell player, Field field) {
+        Cell enemy;
+        if (player == Cell.WHITE) {
+            enemy = Cell.BLACK;
         } else {
-            color = Cell.BLACK;
-            oposite = Cell.WHITE;
+            enemy = Cell.WHITE;
         }
-        List<Move> result = new ArrayList<Move>(64);
-        for (int i = 0; i < field._field.length; i++) {
-            for (int j = 0; j < field._field[i].length; j++) {
-                if (field._field[i][j] == color) {
-                    int c = 1;
-                    int amount = 0;
-                    while (j - c >= 0 && field._field[i][j - c] != Cell.EMPTY) {
-                        if (field._field[i][j - c] == oposite) {
-                            amount++;
-                        }
-                        c++;
-                    }
-                    if (j - c >= 0 && field._field[i][j - c] == Cell.EMPTY && amount != 0) {
-                        result.add(new Move(i, j - c, i, j));
-                    }
-                    c = 1;
-                    amount = 0;
-                    while (j + c <= 7 && field._field[i][j + c] != Cell.EMPTY) {
-                        if (field._field[i][j + c] == oposite) {
-                            amount++;
-                        }
-                        c++;
-                    }
-                    if (j + c <= 7 && field._field[i][j + c] == Cell.EMPTY && amount != 0) {
-                        result.add(new Move(i, j + c, i, j));
-                    }
-                    c = 1;
-                    amount = 0;
-                    while (i + c <= 7 && field._field[i + c][j] != Cell.EMPTY) {
-                        if (field._field[i + c][j] == oposite) {
-                            amount++;
-                        }
-                        c++;
-                    }
-                    if (i + c <= 7 && field._field[i + c][j] == Cell.EMPTY && amount != 0) {
-                        result.add(new Move(i + c, j, i, j));
-                    }
-                    c = 1;
-                    amount = 0;
-                    while (i - c >= 0 && field._field[i - c][j] != Cell.EMPTY) {
-                        if (field._field[i - c][j] == oposite) {
-                            amount++;
-                        }
-                        c++;
-                    }
-                    if (i - c >= 0 && field._field[i - c][j] == Cell.EMPTY && amount != 0) {
-                        result.add(new Move(i - c, j, i, j));
-                    }
-                    c = 1;
-                    amount = 0;
-                    while (i - c >= 0 && j - c >= 0 && field._field[i - c][j - c] != Cell.EMPTY) {
-                        if (field._field[i - c][j - c] == oposite) {
-                            amount++;
-                        }
-                        c++;
-                    }
-                    if (i - c >= 0 && j - c >= 0 && field._field[i - c][j - c] == Cell.EMPTY && amount != 0) {
-                        result.add(new Move(i - c, j - c, i, j));
-                    }
-                    c = 1;
-                    amount = 0;
-                    while (i + c <= 7 && j + c <= 7 && field._field[i + c][j + c] != Cell.EMPTY) {
-                        if (field._field[i + c][j + c] == oposite) {
-                            amount++;
-                        }
-                        c++;
-                    }
-                    if (i + c <= 7 && j + c <= 7 && field._field[i + c][j + c] == Cell.EMPTY && amount != 0) {
-                        result.add(new Move(i + c, j + c, i, j));
-                    }
-                    c = 1;
-                    amount = 0;
-                    while (i + c <= 7 && j - c >= 0 && field._field[i + c][j - c] != Cell.EMPTY) {
-                        if (field._field[i + c][j - c] == oposite) {
-                            amount++;
-                        }
-                        c++;
-                    }
-                    if (i + c <= 7 && j - c >= 0 && field._field[i + c][j - c] == Cell.EMPTY && amount != 0) {
-                        result.add(new Move(i + c, j - c, i, j));
-                    }
-                    c = 1;
-                    amount = 0;
-                    while (i - c >= 0 && j + c <= 7 && field._field[i - c][j + c] != Cell.EMPTY) {
-                        if (field._field[i - c][j + c] == oposite) {
-                            amount++;
-                        }
-                        c++;
-                    }
-                    if (i - c >= 0 && j + c <= 7 && field._field[i - c][j + c] == Cell.EMPTY && amount != 0) {
-                        result.add(new Move(i - c, j + c, i, j));
-                    }
-                }
+        return (in_field(i, j) && (field.get_field()[i][j] == Cell.EMPTY) &&
+                neighbours(field, i, j).contains(enemy) &&
+                !closing(field, i, j, player).isEmpty());
+    }
 
+    List<Cell> neighbours(Field field, int i, int j) {
+        List<Cell> neighbours = new ArrayList<>();
+        for (var direction :
+                Directions.values()) {
+            if (in_field(i + direction.di, j + direction.dj)) {
+                neighbours.add(field.get_field()[i + direction.di][j + direction.dj]);
+            }
+        }
+        return neighbours;
+    }
+
+
+    List<Move> closing(Field field, int o_i, int o_j, Cell player) {
+        List<Move> result = new ArrayList<>();
+        for (var direction : Directions.values()) {
+            List<Move> res1 = new ArrayList<>();
+            int i = o_i + direction.di;
+            int j = o_j + direction.dj;
+            while (!((!in_field(i, j)) || field.get_field()[i][j] == player || field.get_field()[i][j] == Cell.EMPTY)) {
+                res1.add(new Move(i, j));
+                i += direction.di;
+                j += direction.dj;
+            }
+            if (in_field(i, j) && field.get_field()[i][j] == player) {
+                for (var move :
+                        res1) {
+                    result.add(move);
+                }
             }
         }
         return result;
     }
 
-    void makeMove(Field field, Cell player, List<Move> moves, Map<Character, Move> map) {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        char c = 0;
-        int p = 0;
-        while (true) {
-            System.out.println("Enter move identificator");
-            try {
-                c = (char) br.read();
-                p = c;
-                if (p - 97 < map.size() && p - 97 >= 0) {
-                    p = c;
-                    break;
+
+    List<Move> possible_moves(Field field, Cell player) {
+        List<Move> pos = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (can_move(i, j, player, field)) {
+                    pos.add(new Move(i, j));
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
-        Move move = map.get(c);
-        System.out.println(move.toI + " " + move.toJ + " " + move.fromI + " " + move.fromJ);
-        if (move.toI > move.fromI && move.toJ > move.fromJ) {
-            int s = move.toI - move.fromI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI - h][move.toJ - h] = player;
-            }
-        } else if (move.toI < move.fromI && move.toJ < move.fromJ) {
-            int s = move.fromI - move.toI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI + h][move.toJ + h] = player;
-            }
-        } else if (move.toI < move.fromI && move.toJ > move.fromJ) {
-            int s = move.fromI - move.toI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI + h][move.toJ - h] = player;
-            }
-        } else if (move.toI > move.fromI && move.toJ < move.fromJ) {
-            int s = move.toI - move.fromI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI - h][move.toJ + h] = player;
-            }
-        } else if (move.toI > move.fromI && move.toJ == move.fromJ) {
-            int s = move.toI - move.fromI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI - h][move.toJ] = player;
-            }
-        } else if (move.toI < move.fromI && move.toJ == move.fromJ) {
-            int s = move.fromI - move.toI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI + h][move.toJ] = player;
-            }
-        } else if (move.toI == move.fromI && move.toJ > move.fromJ) {
-            int s = move.toJ - move.fromJ;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI][move.toJ - h] = player;
-            }
-        } else if (move.toI == move.fromI && move.toJ < move.fromJ) {
-            int s = move.fromJ - move.toJ;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI][move.toJ + h] = player;
-            }
+        return pos;
+    }
+
+    void make_move(Field field, int i, int j, Cell player) {
+        for (var point : closing(field, i, j, player)) {
+            field.get_field()[point.getToI()][point.getToJ()] = player;
+            field.get_field()[i][j] = player;
         }
     }
 
@@ -228,175 +137,142 @@ public class Game {
         int black = 0;
         int white = 0;
         String result = "";
-        for (int i = 0; i < field._field.length; i++) {
-            for (int j = 0; j < field._field[i].length; j++) {
-                if (field._field[i][j] == Cell.BLACK) {
+        for (int i = 0; i < field.get_field().length; i++) {
+            for (int j = 0; j < field.get_field()[i].length; j++) {
+                if (field.get_field()[i][j] == Cell.BLACK) {
                     black += 1;
-                } else if (field._field[i][j] == Cell.WHITE) {
+                } else if (field.get_field()[i][j] == Cell.WHITE) {
                     white += 1;
                 }
             }
         }
         if (black > white) {
             result = "Выиграли черные со счетом: " + black + "-" + white + "\n";
+            results.add(black);
         } else if (white > black) {
             result = "Выиграли белые со счетом: " + white + "-" + black + "\n";
+            results.add(white);
         } else {
             result = "Ничья! Количество фишек каждой команды: " + black + "\n";
+            results.add(black);
         }
         return result;
     }
 
-    void computerMove(Field field, Cell player, Move move) {
-        if (move.toI > move.fromI && move.toJ > move.fromJ) {
-            int s = move.toI - move.fromI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI - h][move.toJ - h] = player;
-            }
-        } else if (move.toI < move.fromI && move.toJ < move.fromJ) {
-            int s = move.fromI - move.toI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI + h][move.toJ + h] = player;
-            }
-        } else if (move.toI < move.fromI && move.toJ > move.fromJ) {
-            int s = move.fromI - move.toI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI + h][move.toJ - h] = player;
-            }
-        } else if (move.toI > move.fromI && move.toJ < move.fromJ) {
-            int s = move.toI - move.fromI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI - h][move.toJ + h] = player;
-            }
-        } else if (move.toI > move.fromI && move.toJ == move.fromJ) {
-            int s = move.toI - move.fromI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI - h][move.toJ] = player;
-            }
-        } else if (move.toI < move.fromI && move.toJ == move.fromJ) {
-            int s = move.fromI - move.toI;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI + h][move.toJ] = player;
-            }
-        } else if (move.toI == move.fromI && move.toJ > move.fromJ) {
-            int s = move.toJ - move.fromJ;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI][move.toJ - h] = player;
-            }
-        } else if (move.toI == move.fromI && move.toJ < move.fromJ) {
-            int s = move.fromJ - move.toJ;
-            for (int h = 0; h < s; h++) {
-                field._field[move.toI][move.toJ + h] = player;
-            }
-        }
-    }
-
-    public void firstScenario(List<Integer> results) {
-        Field field = new Field();
-        Map<Character, Move> map = new HashMap<>();
-        boolean flag = true;
-        List<Move> lst = possibleMoves(field, Cell.BLACK);
-        while (field.isEmpty() && !lst.isEmpty()) {
-            System.out.println(showPossibleMoves(field, lst, map));
-            if (flag) {
+    public void playerVsPlayer(IPlayer blackPlayer, IPlayer whiteplayer, Field field) {
+        boolean no_white_moves = false;
+        boolean no_black_moves = false;
+        IPlayer player = blackPlayer;
+        Move move;
+        while (!(no_white_moves && no_black_moves)) {
+            var moves = makeMoves(field, player.getColor());
+            System.out.println(field.printField(moves));
+            if (player.getColor() == Cell.BLACK) {
+                if (moves.isEmpty()) {
+                    no_black_moves = true;
+                    System.out.println("Нет черных ходов");
+                    player = whiteplayer;
+                    continue;
+                }
+                no_white_moves = false;
                 System.out.println("Ходят черные");
-                makeMove(field, Cell.BLACK, lst, map);
+                move = player.chooseMove(moves, field, this);
             } else {
+                if (moves.isEmpty()) {
+                    no_white_moves = true;
+                    System.out.println("Нет белых ходов");
+                    player = blackPlayer;
+                    continue;
+                }
+                no_white_moves = false;
                 System.out.println("Ходят белые");
-                Move move = evaluateMoves(lst);
-                computerMove(field, Cell.WHITE, move);
+                move = player.chooseMove(moves, field, this);
             }
-            flag = !flag;
-            System.out.println(field.printField());
-            if (flag) {
-                lst = possibleMoves(field, Cell.BLACK);
-                if (lst.isEmpty()) {
-                    lst = possibleMoves(field, Cell.WHITE);
-                    flag = !flag;
-                }
+            make_move(field, move.getToI(), move.getToJ(), player.getColor());
+            if (player.getColor() == Cell.WHITE) {
+                player = blackPlayer;
             } else {
-                lst = possibleMoves(field, Cell.WHITE);
-                if (lst.isEmpty()) {
-                    lst = possibleMoves(field, Cell.BLACK);
-                    flag = !flag;
-                }
+                player = whiteplayer;
             }
         }
-        results.add(field.countCells(Cell.BLACK));
-        System.out.println("Поле заполнено или никто не может сделать ход");
-        System.out.println(announceWinner(field));
-
-    }
-
-    public void secondScenario(List<Integer> results) {
-        Field field = new Field();
-        Map<Character, Move> map = new HashMap<>();
-        boolean flag = true;
-        List<Move> lst = possibleMoves(field, Cell.BLACK);
-        while (field.isEmpty() && !lst.isEmpty()) {
-            System.out.println(showPossibleMoves(field, lst, map));
-            if (flag) {
-                System.out.println("Ходят черные");
-                Move move = evaluateMoves(lst);
-                computerMove(field, Cell.BLACK, move);
-            } else {
-                System.out.println("Ходят белые");
-                makeMove(field, Cell.WHITE, lst, map);
-            }
-            flag = !flag;
-            System.out.println(field.printField());
-            if (flag) {
-                lst = possibleMoves(field, Cell.BLACK);
-                if (lst.isEmpty()) {
-                    lst = possibleMoves(field, Cell.WHITE);
-                    flag = !flag;
-                }
-            } else {
-                lst = possibleMoves(field, Cell.WHITE);
-                if (lst.isEmpty()) {
-                    lst = possibleMoves(field, Cell.BLACK);
-                    flag = !flag;
-                }
-            }
-        }
-        results.add(field.countCells(Cell.WHITE));
-        System.out.println("Поле заполнено или никто не может сделать ход");
         System.out.println(announceWinner(field));
     }
 
-    public void thirdScenario(List<Integer> results) {
-        Field field = new Field();
-        Map<Character, Move> map = new HashMap<>();
-        boolean flag = true;
-        List<Move> lst = possibleMoves(field, Cell.BLACK);
-        while (field.isEmpty() && !lst.isEmpty()) {
-            System.out.println(showPossibleMoves(field, lst, map));
-            if (flag) {
-                System.out.println("Ходят черные");
-                makeMove(field, Cell.BLACK, lst, map);
-            } else {
-                System.out.println("Ходят белые");
-                makeMove(field, Cell.WHITE, lst, map);
-            }
-            flag = !flag;
-            System.out.println(field.printField());
-            if (flag) {
-                lst = possibleMoves(field, Cell.BLACK);
-                if (lst.isEmpty()) {
-                    lst = possibleMoves(field, Cell.WHITE);
-                    flag = !flag;
+    public void playerVsComputer(ComputerPlayer playerComp, IPlayer playerUser, Field field) {
+        boolean no_white_moves = false;
+        boolean no_black_moves = false;
+        Move move;
+        if (playerComp.getColor() == Cell.BLACK) {
+            IPlayer player = playerComp;
+            while (!(no_white_moves && no_black_moves)) {
+                var moves = makeMoves(field, player.getColor());
+                System.out.println(field.printField(moves));
+                if (player.getColor() == Cell.BLACK) {
+                    if (moves.isEmpty()) {
+                        no_black_moves = true;
+                        System.out.println("Нет черных ходов");
+                        player = playerUser;
+                        continue;
+                    }
+                    no_white_moves = false;
+                    System.out.println("Ходят черные");
+                    move = player.chooseMove(moves, field, this);
+                } else {
+                    if (moves.isEmpty()) {
+                        no_white_moves = true;
+                        System.out.println("Нет белых ходов");
+                        player = playerComp;
+                        continue;
+                    }
+                    no_white_moves = false;
+                    System.out.println("Ходят белые");
+                    move = player.chooseMove(moves, field, this);
                 }
-            } else {
-                lst = possibleMoves(field, Cell.WHITE);
-                if (lst.isEmpty()) {
-                    lst = possibleMoves(field, Cell.BLACK);
-                    flag = !flag;
+                make_move(field, move.getToI(), move.getToJ(), player.getColor());
+                if (player.getColor() == Cell.WHITE) {
+                    player = playerComp;
+                } else {
+                    player = playerUser;
+                }
+            }
+        } else {
+            IPlayer player = playerUser;
+            while (!(no_white_moves && no_black_moves)) {
+                var moves = makeMoves(field, player.getColor());
+                System.out.println(field.printField(moves));
+                if (player.getColor() == Cell.BLACK) {
+                    if (moves.isEmpty()) {
+                        no_black_moves = true;
+                        System.out.println("Нет черных ходов");
+                        player = playerComp;
+                        continue;
+                    }
+                    no_white_moves = false;
+                    System.out.println("Ходят черные");
+                    move = player.chooseMove(moves, field, this);
+                } else {
+                    if (moves.isEmpty()) {
+                        no_white_moves = true;
+                        System.out.println("Нет белых ходов");
+                        player = playerUser;
+                        continue;
+                    }
+                    no_white_moves = false;
+                    System.out.println("Ходят белые");
+                    move = player.chooseMove(moves, field, this);
+                }
+                make_move(field, move.getToI(), move.getToJ(), player.getColor());
+                if (player.getColor() == Cell.WHITE) {
+                    player = playerUser;
+                } else {
+                    player = playerComp;
                 }
             }
         }
-        results.add(field.countCells(Cell.BLACK));
-        results.add(field.countCells(Cell.WHITE));
-        System.out.println("Поле заполнено или никто не может сделать ход");
         System.out.println(announceWinner(field));
+    }
+
+    public Integer getMaxResult() {
+        return Collections.max(results);
     }
 }

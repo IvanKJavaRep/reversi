@@ -1,51 +1,31 @@
 package com.company;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
 public class Main {
 
     public static void main(String[] args) {
-        List<Integer> results = new ArrayList<>();
 
+        Game game = new Game();
         while (true) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Выберите режим игры: " +
-                    "легкий - введите 1, игрок против игрока - 2\n" +
-                    "Если в режиме легкий хотите играть за черных, к 1 добавьте через пробел ключ b, если" +
-                    "за белых - w\n" +
-                    "Чтобы закончить сеанс, введите 3\n" +
-                    "Чтобы вывести лучший результат за сессию введите 4\n");
-            Game game = new Game();
-            try {
-                String input = br.readLine();
-                if (input.equals("1 b")) {
-                    game.firstScenario(results);
-                } else if (input.equals("1 w")) {
-                    game.secondScenario(results);
-                } else if (input.equals("2")) {
-                    game.thirdScenario(results);
-                } else if (input.equals("3")) {
-                    System.out.println("Конец игры");
-                    break;
-                } else if (input.equals("4")) {
-                    if (results.isEmpty()) {
-                        System.out.println("Игр еще не было\n");
-                    } else {
-                        System.out.println(Collections.max(results));
-                    }
-                } else {
-                    System.out.println("Ошибка ввода, проверьте, что введенные ключи\n" +
-                            "совпадают с правильными\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            Field field = new Field();
+            System.out.println("Введите:\n1 для игры игрок против игрока\n" +
+                    "2 для игры с компьютером\n" +
+                    "3 для вывода максимального счета\n" +
+                    "x для выхода из игры\n");
+            Character gameType = game.chooseGameType();
+            if (gameType == '1') {
+                game.playerVsPlayer(new PersonPlayer(Cell.BLACK), new PersonPlayer(Cell.WHITE), field);
+            } else if (gameType == '2') {
+                ComputerPlayer player1 = game.chooseComputerColor();
+                IPlayer player2 = PersonPlayer.getEnemy(player1);
+                game.playerVsComputer(player1, player2, field);
+            } else if (gameType == 'x') {
+                System.out.println("Игра окончена!");
+                break;
+            } else if (gameType == '3') {
+                System.out.println(game.getMaxResult());
+                continue;
             }
+
         }
     }
 }
