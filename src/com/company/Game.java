@@ -28,17 +28,17 @@ public class Game {
                 if (input == '1' || input == '2' || input == '3' || input == 'x') {
                     return input;
                 } else {
-                    System.out.println("Введите правильный симовл");
+                    System.out.println("Р’РІРµРґРёС‚Рµ РїСЂР°РІРёР»СЊРЅС‹Р№ СЃРёРјРѕРІР»");
                 }
             } catch (Exception e) {
-                System.out.println("Введите еще раз");
+                System.out.println("Р’РІРµРґРёС‚Рµ РµС‰Рµ СЂР°Р·");
             }
         }
     }
 
     public ComputerPlayer chooseComputerColor() {
-        System.out.println("Вы выбрали режим игры с искусственным интеллектом\n" +
-                "Если хотите, чтобы компьютер играл за черных, введите 1, иначе - 2\n");
+        System.out.println("Р’С‹ РІС‹Р±СЂР°Р»Рё СЂРµР¶РёРј РёРіСЂС‹ СЃ РёСЃРєСѓСЃСЃС‚РІРµРЅРЅС‹Рј РёРЅС‚РµР»Р»РµРєС‚РѕРј\n" +
+                "Р•СЃР»Рё С…РѕС‚РёС‚Рµ, С‡С‚РѕР±С‹ РєРѕРјРїСЊСЋС‚РµСЂ РёРіСЂР°Р» Р·Р° С‡РµСЂРЅС‹С…, РІРІРµРґРёС‚Рµ 1, РёРЅР°С‡Рµ - 2\n");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         Character input = '1';
         while (true) {
@@ -51,13 +51,13 @@ public class Game {
                     } else if (input == '2') {
                         return new ComputerPlayer(Cell.WHITE);
                     } else {
-                        System.out.println("Введите правильный симовл");
+                        System.out.println("Р’РІРµРґРёС‚Рµ РїСЂР°РІРёР»СЊРЅС‹Р№ СЃРёРјРѕРІР»");
                     }
                 } else {
-                    System.out.println("Введите правильный симовл");
+                    System.out.println("Р’РІРµРґРёС‚Рµ РїСЂР°РІРёР»СЊРЅС‹Р№ СЃРёРјРѕРІР»");
                 }
             } catch (Exception e) {
-                System.out.println("Введите еще раз");
+                System.out.println("Р’РІРµРґРёС‚Рµ РµС‰Рµ СЂР°Р·");
             }
         }
     }
@@ -147,13 +147,13 @@ public class Game {
             }
         }
         if (black > white) {
-            result = "Выиграли черные со счетом: " + black + "-" + white + "\n";
+            result = "Р’С‹РёРіСЂР°Р»Рё С‡РµСЂРЅС‹Рµ СЃРѕ СЃС‡РµС‚РѕРј: " + black + "-" + white + "\n";
             results.add(black);
         } else if (white > black) {
-            result = "Выиграли белые со счетом: " + white + "-" + black + "\n";
+            result = "Р’С‹РёРіСЂР°Р»Рё Р±РµР»С‹Рµ СЃРѕ СЃС‡РµС‚РѕРј: " + white + "-" + black + "\n";
             results.add(white);
         } else {
-            result = "Ничья! Количество фишек каждой команды: " + black + "\n";
+            result = "РќРёС‡СЊСЏ! РљРѕР»РёС‡РµСЃС‚РІРѕ С„РёС€РµРє РєР°Р¶РґРѕР№ РєРѕРјР°РЅРґС‹: " + black + "\n";
             results.add(black);
         }
         return result;
@@ -170,22 +170,22 @@ public class Game {
             if (player.getColor() == Cell.BLACK) {
                 if (moves.isEmpty()) {
                     no_black_moves = true;
-                    System.out.println("Нет черных ходов");
+                    System.out.println("РќРµС‚ С‡РµСЂРЅС‹С… С…РѕРґРѕРІ");
                     player = whiteplayer;
                     continue;
                 }
                 no_white_moves = false;
-                System.out.println("Ходят черные");
+                System.out.println("РҐРѕРґСЏС‚ С‡РµСЂРЅС‹Рµ");
                 move = player.chooseMove(moves, field, this);
             } else {
                 if (moves.isEmpty()) {
                     no_white_moves = true;
-                    System.out.println("Нет белых ходов");
+                    System.out.println("РќРµС‚ Р±РµР»С‹С… С…РѕРґРѕРІ");
                     player = blackPlayer;
                     continue;
                 }
                 no_white_moves = false;
-                System.out.println("Ходят белые");
+                System.out.println("РҐРѕРґСЏС‚ Р±РµР»С‹Рµ");
                 move = player.chooseMove(moves, field, this);
             }
             make_move(field, move.getToI(), move.getToJ(), player.getColor());
@@ -210,22 +210,22 @@ public class Game {
                 if (player.getColor() == Cell.BLACK) {
                     if (moves.isEmpty()) {
                         no_black_moves = true;
-                        System.out.println("Нет черных ходов");
+                        System.out.println("РќРµС‚ С‡РµСЂРЅС‹С… С…РѕРґРѕРІ");
                         player = playerUser;
                         continue;
                     }
                     no_white_moves = false;
-                    System.out.println("Ходят черные");
+                    System.out.println("РҐРѕРґСЏС‚ С‡РµСЂРЅС‹Рµ");
                     move = player.chooseMove(moves, field, this);
                 } else {
                     if (moves.isEmpty()) {
                         no_white_moves = true;
-                        System.out.println("Нет белых ходов");
+                        System.out.println("РќРµС‚ Р±РµР»С‹С… С…РѕРґРѕРІ");
                         player = playerComp;
                         continue;
                     }
                     no_white_moves = false;
-                    System.out.println("Ходят белые");
+                    System.out.println("РҐРѕРґСЏС‚ Р±РµР»С‹Рµ");
                     move = player.chooseMove(moves, field, this);
                 }
                 make_move(field, move.getToI(), move.getToJ(), player.getColor());
@@ -243,22 +243,22 @@ public class Game {
                 if (player.getColor() == Cell.BLACK) {
                     if (moves.isEmpty()) {
                         no_black_moves = true;
-                        System.out.println("Нет черных ходов");
+                        System.out.println("РќРµС‚ С‡РµСЂРЅС‹С… С…РѕРґРѕРІ");
                         player = playerComp;
                         continue;
                     }
                     no_white_moves = false;
-                    System.out.println("Ходят черные");
+                    System.out.println("РҐРѕРґСЏС‚ С‡РµСЂРЅС‹Рµ");
                     move = player.chooseMove(moves, field, this);
                 } else {
                     if (moves.isEmpty()) {
                         no_white_moves = true;
-                        System.out.println("Нет белых ходов");
+                        System.out.println("РќРµС‚ Р±РµР»С‹С… С…РѕРґРѕРІ");
                         player = playerUser;
                         continue;
                     }
                     no_white_moves = false;
-                    System.out.println("Ходят белые");
+                    System.out.println("РҐРѕРґСЏС‚ Р±РµР»С‹Рµ");
                     move = player.chooseMove(moves, field, this);
                 }
                 make_move(field, move.getToI(), move.getToJ(), player.getColor());

@@ -7,10 +7,10 @@ public class Main {
         Game game = new Game();
         while (true) {
             Field field = new Field();
-            System.out.println("Введите:\n1 для игры игрок против игрока\n" +
-                    "2 для игры с компьютером\n" +
-                    "3 для вывода максимального счета\n" +
-                    "x для выхода из игры\n");
+            System.out.println("Р’РІРµРґРёС‚Рµ:\n1 РґР»СЏ РёРіСЂС‹ РёРіСЂРѕРє РїСЂРѕС‚РёРІ РёРіСЂРѕРєР°\n" +
+                    "2 РґР»СЏ РёРіСЂС‹ СЃ РєРѕРјРїСЊСЋС‚РµСЂРѕРј\n" +
+                    "3 РґР»СЏ РІС‹РІРѕРґР° РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ СЃС‡РµС‚Р°\n" +
+                    "x РґР»СЏ РІС‹С…РѕРґР° РёР· РёРіСЂС‹\n");
             Character gameType = game.chooseGameType();
             if (gameType == '1') {
                 game.playerVsPlayer(new PersonPlayer(Cell.BLACK), new PersonPlayer(Cell.WHITE), field);
@@ -19,7 +19,7 @@ public class Main {
                 IPlayer player2 = PersonPlayer.getEnemy(player1);
                 game.playerVsComputer(player1, player2, field);
             } else if (gameType == 'x') {
-                System.out.println("Игра окончена!");
+                System.out.println("РРіСЂР° РѕРєРѕРЅС‡РµРЅР°!");
                 break;
             } else if (gameType == '3') {
                 System.out.println(game.getMaxResult());

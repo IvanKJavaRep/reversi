@@ -26,17 +26,17 @@ public class PersonPlayer implements IPlayer {
     public Move chooseMove(Map<Character, Move> moves, Field field, Game game) {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         Character input = 'A';
-        System.out.println("Введите один из символов, предложенных на поле");
+        System.out.println("Р’РІРµРґРёС‚Рµ РѕРґРёРЅ РёР· СЃРёРјРІРѕР»РѕРІ, РїСЂРµРґР»РѕР¶РµРЅРЅС‹С… РЅР° РїРѕР»Рµ");
         while (true) {
             try {
                 input = br.readLine().charAt(0);
                 if (moves.containsKey(input)) {
                     return moves.get(input);
                 } else {
-                    System.out.println("Введите правильный симовл");
+                    System.out.println("Р’РІРµРґРёС‚Рµ РїСЂР°РІРёР»СЊРЅС‹Р№ СЃРёРјРѕРІР»");
                 }
             } catch (Exception e) {
-                System.out.println("Введите еще раз");
+                System.out.println("Р’РІРµРґРёС‚Рµ РµС‰Рµ СЂР°Р·");
             }
         }
     }
